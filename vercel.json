@@ -2,9 +2,5 @@
   "framework": "nextjs",
   "buildCommand": "next build",
   "outputDirectory": ".next",
-  "regions": ["sfo1"],
-  "images": {
-    "domains": ["images.pexels.com", "images.unsplash.com", "cdn.stockcake.com", "www.foodiesfeed.com"],
-    "formats": ["image/avif", "image/webp"]
-  }
+  "regions": ["sfo1"]
 }
