@@ -49,7 +49,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">References</h3>
             <p className="text-matcha-light mb-2">
-              This website is based on academic research about matcha's cultural significance
+              This website is based on academic research about matcha&apos;s cultural significance
               and its global trajectory.
             </p>
             <Link 
