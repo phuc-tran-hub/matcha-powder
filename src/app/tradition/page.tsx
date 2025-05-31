@@ -782,11 +782,18 @@ export default function TraditionPage() {
 }
 
 // Component for Chanoyu Principles
-const PrincipleCard = ({ kanji, principle, description, delay }) => (
+interface PrincipleCardProps {
+  kanji: string;
+  principle: string;
+  description: string;
+  delay: number | string;
+}
+
+const PrincipleCard = ({ kanji, principle, description, delay }: PrincipleCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
+    transition={{ duration: 0.5, delay: typeof delay === 'string' ? parseFloat(delay) : delay }}
     viewport={{ once: true }}
     className="bg-white p-6 rounded-lg shadow-md text-center"
   >
@@ -799,7 +806,14 @@ const PrincipleCard = ({ kanji, principle, description, delay }) => (
 );
 
 // Component for Production Steps
-const ProductionStep = ({ number, title, description, align }) => (
+interface ProductionStepProps {
+  number: number | string;
+  title: string;
+  description: string;
+  align: 'left' | 'right';
+}
+
+const ProductionStep = ({ number, title, description, align }: ProductionStepProps) => (
   <motion.div
     initial={{ opacity: 0, x: align === 'left' ? -20 : 20 }}
     whileInView={{ opacity: 1, x: 0 }}
