@@ -9,7 +9,7 @@ export default function Home() {
     <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center bg-matcha-dark text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-30 bg-matcha-medium/20 bg-repeat"></div>
+        <div className="absolute inset-0 z-0 opacity-30 bg-[url('/matcha-bg-pattern.png')] bg-repeat"></div>
         <div className="container-custom relative z-10 py-16 md:py-24">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -47,26 +47,26 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="heading-2 mb-4 text-black">The Global Trajectory of Matcha</h2>
+            <h2 className="heading-2 mb-4">The Global Trajectory of Matcha</h2>
             <p className="body-text max-w-3xl mx-auto text-gray-800">
-              From sacred ritual to trendy superfood, matcha&apos;s journey spans centuries and continents.
+              From sacred ritual to trendy superfood, matcha's journey spans centuries and continents.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
-              className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
+              className="bg-matcha-powder/30 p-6 rounded-lg shadow-md"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <span className="text-xl font-bold">和</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Japanese Tradition</h3>
+              <h3 className="text-xl font-bold mb-3">Japanese Tradition</h3>
               <p className="text-gray-800">
-                Explore matcha&apos;s sacred roots in Zen Buddhism and the Japanese tea ceremony (Chanoyu), 
+                Explore matcha's sacred roots in Zen Buddhism and the Japanese tea ceremony (Chanoyu), 
                 embodying harmony, respect, purity, and tranquility.
               </p>
               <Link href="/tradition" className="inline-block mt-4 text-matcha-dark font-medium hover:underline">
@@ -79,18 +79,18 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               viewport={{ once: true }}
-              className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
+              className="bg-matcha-powder/30 p-6 rounded-lg shadow-md"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <span className="text-xl font-bold">変</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-black">The Transformation</h3>
+              <h3 className="text-xl font-bold mb-3">The Transformation</h3>
               <p className="text-gray-800">
-                Track matcha&apos;s passage from Japanese monasteries to Western culture, revealing how global trade and 
+                Witness matcha's journey across oceans and cultures, examining how global trade and 
                 cultural exchange have reshaped its meaning and use.
               </p>
               <Link href="/journey" className="inline-block mt-4 text-matcha-dark font-medium hover:underline">
-                Trace the journey →
+                Follow the journey →
               </Link>
             </motion.div>
 
@@ -99,37 +99,18 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
               viewport={{ once: true }}
-              className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
+              className="bg-matcha-powder/30 p-6 rounded-lg shadow-md"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <span className="text-xl font-bold">商</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-black">American Commodification</h3>
+              <h3 className="text-xl font-bold mb-3">American Commodification</h3>
               <p className="text-gray-800">
-                Witness matcha&apos;s transformation into a trendy commodity and &apos;superfood,&apos; driven by American markets, from NYC cafes 
+                Analyze matcha's evolution into a trendy superfood in American markets, from NYC cafes 
                 to Starbucks, and its portrayal on social media.
               </p>
               <Link href="/commodification" className="inline-block mt-4 text-matcha-dark font-medium hover:underline">
-                Explore impacts →
-              </Link>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
-            >
-              <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                <span className="text-xl font-bold">感</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Sensory Experience</h3>
-              <p className="text-gray-800">
-                Explore the rich vocabulary and evaluation criteria used to describe matcha&apos;s complex sensory attributes across different cultural contexts.
-              </p>
-              <Link href="/sensory" className="inline-block mt-4 text-matcha-dark font-medium hover:underline">
-                Taste the difference →
+                See the market impact →
               </Link>
             </motion.div>
           </div>
@@ -146,9 +127,9 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="heading-2 mb-4 text-black">Traditional vs. Americanized Matcha</h2>
+            <h2 className="heading-2 mb-4">Traditional vs. Americanized Matcha</h2>
             <p className="body-text max-w-3xl mx-auto text-gray-800">
-              Explore the stark contrasts between matcha&apos;s traditional Japanese preparation and its modern American adaptations.
+              Explore the stark contrasts between matcha's traditional Japanese preparation and its modern American adaptations.
             </p>
           </motion.div>
 
@@ -157,21 +138,10 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-white shadow-lg rounded-lg overflow-hidden relative"
+            className="bg-white shadow-lg rounded-lg overflow-hidden"
           >
-            <div className="absolute inset-0 z-0 opacity-15 bg-gradient-to-br from-matcha-light to-matcha-dark pointer-events-none"></div>
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="p-8 bg-matcha-dark text-white">
-                <div className="mb-6 rounded-lg overflow-hidden shadow-lg" style={{ height: '240px' }}>
-                  <Image 
-                    src="https://images.pexels.com/photos/8474099/pexels-photo-8474099.jpeg" 
-                    alt="Traditional Japanese Matcha Powder" 
-                    width={600}
-                    height={400}
-                    className="w-full h-full object-cover"
-                    priority
-                  />
-                </div>
                 <h3 className="text-2xl font-bold mb-6 border-b border-matcha-light pb-2">Traditional Japanese Matcha</h3>
                 <ul className="space-y-4">
                   <li className="flex items-start">
@@ -197,16 +167,6 @@ export default function Home() {
                 </ul>
               </div>
               <div className="p-8 bg-white text-gray-800">
-                <div className="mb-6 rounded-lg overflow-hidden shadow-lg" style={{ height: '240px' }}>
-                  <Image 
-                    src="https://images.pexels.com/photos/8329672/pexels-photo-8329672.jpeg" 
-                    alt="Americanized Matcha Latte" 
-                    width={600}
-                    height={400}
-                    className="w-full h-full object-cover"
-                    priority
-                  />
-                </div>
                 <h3 className="text-2xl font-bold mb-6 border-b border-matcha-medium pb-2">Americanized Matcha</h3>
                 <ul className="space-y-4">
                   <li className="flex items-start">
@@ -253,7 +213,7 @@ export default function Home() {
           >
             <h2 className="heading-2 mb-6">Begin Your Matcha Journey</h2>
             <p className="body-text max-w-2xl mx-auto mb-8">
-              Discover the fascinating cultural and economic story behind one of the world&apos;s most 
+              Discover the fascinating cultural and economic story behind one of the world's most 
               intriguing beverages, from ancient Japanese temples to modern American cafes.
             </p>
             <Link href="/journey" className="bg-white text-matcha-deep hover:bg-cream font-medium py-3 px-6 rounded-md transition-colors inline-block">
