@@ -5,6 +5,9 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import * as d3 from 'd3';
+import { feature } from 'topojson-client';
+import { Citation, InlineCitation, Bibliography } from '../../components/Citation';
+import { getJourneyPageSources } from '../../data/bibliography';
 // Define MatchaShop type inline since we can&apos;t import it directly yet
 type MatchaShopType = {
   name: string;
@@ -22,6 +25,7 @@ interface TimelineEventProps {
   description: string;
   align: 'left' | 'right';
   delay: number;
+  sourceNumber?: number;
 }
 
 interface TradeCardProps {
@@ -29,16 +33,9 @@ interface TradeCardProps {
   description: string;
   icon: string;
   delay: number;
+  sourceNumber?: number;
 }
 
-// Define types for shipping routes
-interface ShippingRoute {
-  name: string;
-  path: [number, number][];
-  color: string;
-  pathNames?: string[];
-  dasharray?: string;
-}
 
 // Dynamically import the Leaflet map component to avoid SSR issues
 // Import directly from the correct path relative to the current file
@@ -62,7 +59,7 @@ export default function JourneyPage() {
     { name: "Ippodo Tea", location: [-73.9819, 40.7493], rating: 4.9 }
   ]);
 
-  // Global map visualization for shipping routes
+  // Global map visualization with real world data
   useEffect(() => {
     if (typeof window === 'undefined' || !globalMapRef.current) return;
 
@@ -80,254 +77,380 @@ export default function JourneyPage() {
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto;");
 
-    // Create a projection for our simpleProjection function
-    // We'll use this in the shipping routes
-    const projection = d3.geoMercator()
-      .center([140, 30]) // Centered roughly between Japan and US
-      .scale(width / 6)
-      .translate([width / 2, height / 2]);
+    // Create a natural earth projection optimized for Pacific Ocean visibility
+    const projection = d3.geoNaturalEarth1()
+      .scale(width / 6.5)
+      .translate([width / 2, height / 2])
+      .rotate([-10, 0, 0]); // Slight rotation to better center Pacific
 
-    // Create a path generator - not used in our simplified map approach
-    // but keep the projection for possible future use
-    // const path = d3.geoPath().projection(projection);
+    // Create path generator
+    const path = d3.geoPath().projection(projection);
 
-    // Draw a simplified world map with just key areas highlighted
-    // Draw a simplified world background
-    svg.append("rect")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", "#f5f5f5")
-      .attr("opacity", 0.5);
-      
-    // Add a simplified Japan region
-    svg.append("ellipse")
-      .attr("cx", width * 0.75) // Position Japan on the right side
-      .attr("cy", height * 0.45)
-      .attr("rx", 30)
-      .attr("ry", 20)
-      .attr("fill", "#4b830d") // matcha-dark
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 0.5);
-    
-    // Add a simplified USA region
-    svg.append("rect")
-      .attr("x", width * 0.15) // Position USA on the left side
-      .attr("y", height * 0.4)
-      .attr("width", 100)
-      .attr("height", 60)
-      .attr("fill", "#8bc34a") // matcha-medium
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 0.5);
-      
-    // Add label for Japan
-    svg.append("text")
-      .attr("x", width * 0.75)
-      .attr("y", height * 0.45 - 30)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
-      .attr("font-weight", "bold")
-      .text("Japan");
-      
-    // Add label for USA
-    svg.append("text")
-      .attr("x", width * 0.15 + 50)
-      .attr("y", height * 0.4 - 10)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
-      .attr("font-weight", "bold")
-      .text("USA");
-      
-    // Draw a simplified Pacific Ocean
-    svg.append("text")
-      .attr("x", width * 0.45)
-      .attr("y", height * 0.45)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
-      .attr("fill", "#2196f3")
-      .attr("font-style", "italic")
-      .text("Pacific Ocean");
-      
-    // Add a map background circle just for visual effect
-    svg.append("circle")
-      .attr("cx", width / 2)
-      .attr("cy", height / 2)
-      .attr("r", Math.min(width, height) * 0.45)
-      .attr("fill", "none")
-      .attr("stroke", "#ccc")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "5,5");
-      
-    // Create a simple coordinates mapping function using the projection
-    const simpleProjection = (coordinates: [number, number]) => {
-      // We could use the projection directly, but we want more control for our simplified map
-      // This is a modified version that uses the projection logic but with custom positioning
-      // Japan is roughly at [140, 36], USA NYC is roughly at [-74, 40]
-      // Use the projection to get a baseline, then adjust
-      const projCoords = projection(coordinates);
-      if (projCoords) {
-        // Apply some custom adjustments to fine-tune the position
-        return projCoords;
-      } else {
-        // Fallback if projection fails
-        const x = width * 0.75 - (coordinates[0] - 140) * 2;
-        const y = height * 0.45 + (coordinates[1] - 36) * 2;
-        return [x, y];
-      }
-    };
-      
-    // Function to convert coordinates to SVG position
-    const toSvgPosition = (coordinates: [number, number]) => {
-      const [x, y] = simpleProjection(coordinates);
-      return [x, y];
-    };
-      
-    // Update the path generation to use our simplified projection
-    const simplePath = (points: [number, number][]) => {
-      let pathData = "M" + toSvgPosition(points[0]).join(",");
-      for (let i = 1; i < points.length; i++) {
-        pathData += "L" + toSvgPosition(points[i]).join(",");
-      }
-      return pathData;
+    // Define key locations with accurate coordinates
+    const locations = {
+      uji: [135.8048, 34.8841], // Uji, Japan (matcha birthplace)
+      tokyo: [139.6917, 35.6895], // Tokyo Port
+      osaka: [135.5023, 34.6937], // Osaka Port
+      sanFrancisco: [-122.4194, 37.7749], // San Francisco
+      losAngeles: [-118.2437, 34.0522], // Los Angeles Port
+      newYork: [-74.0060, 40.7128], // New York Port
+      vancouver: [-123.1207, 49.2827] // Vancouver (alternative route)
     };
 
-    // Global shipping routes data
-    const shippingRoutes: ShippingRoute[] = [
-      {
-        name: "Traditional Route",
-        path: [
-          // Tokyo, Japan
-          [139.6917, 35.6895],
-          // San Francisco, USA
-          [-122.4194, 37.7749],
-          // New York, USA
-          [-74.0060, 40.7128]
-        ],
-        color: "#4b830d" // matcha-dark
-      },
-      {
-        name: "Modern Air Route",
-        path: [
-          // Tokyo, Japan
-          [139.6917, 35.6895],
-          // New York, USA
-          [-74.0060, 40.7128]
-        ],
-        color: "#2196f3", // blue
-        dasharray: "none"
-      }
-    ];
-
-    // Define location names for routes
-    const locationNames = {
-      japan: "Tokyo, Japan",
-      sanFrancisco: "San Francisco, USA",
-      newYork: "New York, USA"
+    // Function to convert lat/lng to SVG coordinates
+    const project = (coordinates: [number, number]) => {
+      const projected = projection(coordinates);
+      return projected || [0, 0];
     };
 
-    // Draw shipping routes using our simplified projection
-    shippingRoutes.forEach((route, i) => {
-      // Generate path data for this route
-      const pathData = simplePath(route.path);
-      
-      // Create path with animation
-      const routePath = svg.append("path")
-        .attr("fill", "none")
-        .attr("stroke", route.color)
-        .attr("stroke-width", 2)
-        .attr("stroke-dasharray", route.dasharray || "none")
-        .attr("d", pathData);
-
-      // Animate the path
-      const pathLength = routePath.node()?.getTotalLength() || 0;
-      routePath
-        .attr("stroke-dasharray", pathLength)
-        .attr("stroke-dashoffset", pathLength)
-        .transition()
-        .duration(3000)
-        .delay(i * 1000)
-        .attr("stroke-dashoffset", 0);
-
-      // Add points for key locations
-      route.path.forEach((coords, j) => {
-        const [x, y] = toSvgPosition(coords);
+    // Load world map data from unpkg CDN (world-atlas TopoJSON)
+    const loadWorldMap = async () => {
+      try {
+        // Load world boundaries from unpkg CDN
+        const worldData = await d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json");
         
-        // Add circle point
-        svg.append("circle")
-          .attr("class", `route-point-${i}`)
-          .attr("cx", x)
-          .attr("cy", y)
-          .attr("r", 0)
-          .attr("fill", route.color)
-          .transition()
-          .delay(i * 1000 + j * 750)
-          .duration(500)
-          .attr("r", 6);
-        
-        // Add label
-        let label = "";
-        if (j === 0) label = locationNames.japan;
-        else if (j === 1 && route.name === "Traditional Route") label = locationNames.sanFrancisco;
-        else if ((j === 1 && route.name === "Modern Air Route") || 
-                (j === 2 && route.name === "Traditional Route")) {
-          label = locationNames.newYork;
+        if (!worldData) {
+          console.error("Failed to load world map data");
+          return;
         }
+
+        // Convert TopoJSON to GeoJSON
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const countries = feature(worldData as any, (worldData as any).objects.countries) as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const land = feature(worldData as any, (worldData as any).objects.land) as any;
+
+        // Create clipping path to constrain map to visible area
+        svg.append("defs")
+          .append("clipPath")
+          .attr("id", "map-clip")
+          .append("rect")
+          .attr("width", width)
+          .attr("height", height);
+
+        // Create main map group with clipping
+        const mapGroup = svg.append("g")
+          .attr("clip-path", "url(#map-clip)");
+
+        // Draw ocean background
+        mapGroup.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "#a8dadc")
+          .attr("opacity", 0.3);
+
+        // Draw land masses
+        mapGroup.append("g")
+          .selectAll("path")
+          .data(land.features)
+          .enter()
+          .append("path")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .attr("d", path as any)
+          .attr("fill", "#d4c5b9")
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 0.5)
+          .attr("opacity", 0.8);
+
+        // Draw country boundaries
+        mapGroup.append("g")
+          .selectAll("path")
+          .data(countries.features)
+          .enter()
+          .append("path")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .attr("d", path as any)
+          .attr("fill", "none")
+          .attr("stroke", "#999")
+          .attr("stroke-width", 0.3)
+          .attr("opacity", 0.6);
+
+        // Highlight Japan and USA
+        mapGroup.append("g")
+          .selectAll("path")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .data(countries.features.filter((d: any) => d.properties.NAME === "Japan" || d.properties.NAME === "United States of America"))
+          .enter()
+          .append("path")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .attr("d", path as any)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .attr("fill", (d: any) => d.properties.NAME === "Japan" ? "#4b830d" : "#8bc34a")
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 1)
+          .attr("opacity", 0.8);
+
+        // Define authentic shipping and flight routes
+        const routes = [
+          {
+            name: "Traditional Tea Ship Route (1800s-1950s)",
+            type: "ship",
+            path: [locations.uji, locations.osaka, locations.sanFrancisco, locations.newYork],
+            color: "#8d6e63", // tea brown
+            dasharray: "8,4",
+            description: "Traditional sea route via Pacific shipping lanes"
+          },
+          {
+            name: "Modern Container Shipping",
+            type: "ship", 
+            path: [locations.tokyo, locations.losAngeles, locations.newYork],
+            color: "#4b830d", // matcha dark
+            dasharray: "none",
+            description: "Primary commercial route for matcha imports"
+          },
+          {
+            name: "Direct Air Cargo Route",
+            type: "air",
+            path: [locations.tokyo, locations.newYork],
+            color: "#2196f3", // blue
+            dasharray: "4,2",
+            description: "High-value matcha air freight route"
+          },
+          {
+            name: "Pacific Northwest Route",
+            type: "ship",
+            path: [locations.tokyo, locations.vancouver, locations.newYork],
+            color: "#ff9800", // orange
+            dasharray: "6,3",
+            description: "Alternative shipping via Canadian ports"
+          }
+        ];
+
+        // Create great circle paths for more accurate route visualization
+        const generateGreatCirclePath = (start: [number, number], end: [number, number]) => {
+          const line = d3.geoInterpolate(start, end);
+          const points = [];
+          for (let i = 0; i <= 50; i++) {
+            points.push(line(i / 50));
+          }
+          return points;
+        };
+
+        // Draw routes with realistic great circle paths
+        routes.forEach((route, routeIndex) => {
+          for (let i = 0; i < route.path.length - 1; i++) {
+            const start = route.path[i] as [number, number];
+            const end = route.path[i + 1] as [number, number];
+            const pathPoints = generateGreatCirclePath(start, end);
+            
+            // Create path string
+            const pathData = "M" + pathPoints.map(point => project(point).join(",")).join("L");
+            
+            // Draw the route path
+            const routePath = mapGroup.append("path")
+              .attr("d", pathData)
+              .attr("fill", "none")
+              .attr("stroke", route.color)
+              .attr("stroke-width", 3)
+              .attr("stroke-dasharray", route.dasharray)
+              .attr("opacity", 0.9);
+
+            // Animate the path drawing
+            const pathLength = routePath.node()?.getTotalLength() || 0;
+            routePath
+              .attr("stroke-dasharray", `${pathLength} ${pathLength}`)
+              .attr("stroke-dashoffset", pathLength)
+              .transition()
+              .duration(3000)
+              .delay(routeIndex * 800 + i * 400)
+              .attr("stroke-dashoffset", 0)
+              .attr("stroke-dasharray", route.dasharray);
+
+            // Add route markers for ships/planes
+            if (i === 0) {
+              const icon = route.type === "air" ? "✈️" : "🚢";
+              const [x, y] = project(start);
+              
+              mapGroup.append("text")
+                .attr("x", x)
+                .attr("y", y)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
+                .style("opacity", 0)
+                .text(icon)
+                .transition()
+                .delay(routeIndex * 800 + 2000)
+                .duration(500)
+                .style("opacity", 1);
+            }
+          }
+        });
+
+        // Add location markers and labels
+        Object.entries(locations).forEach(([name, coords], index) => {
+          const [x, y] = project(coords as [number, number]);
+          
+          // Add location dot with glow effect
+          mapGroup.append("circle")
+            .attr("cx", x)
+            .attr("cy", y)
+            .attr("r", 0)
+            .attr("fill", name.includes("uji") || name.includes("tokyo") || name.includes("osaka") ? "#4b830d" : "#ff5722")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2)
+            .style("filter", "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))")
+            .transition()
+            .delay(index * 200 + 1000)
+            .duration(400)
+            .attr("r", name === "uji" ? 10 : 6); // Emphasize Uji as the origin
+
+          // Add location label with background
+          const displayName = name === "uji" ? "Uji (Matcha Origin)" : 
+                             name === "tokyo" ? "Tokyo" :
+                             name === "osaka" ? "Osaka" :
+                             name === "sanFrancisco" ? "San Francisco" :
+                             name === "losAngeles" ? "Los Angeles" :
+                             name === "newYork" ? "New York" :
+                             name === "vancouver" ? "Vancouver" : name;
+          
+          // Label background
+          const labelBg = mapGroup.append("rect")
+            .attr("x", x - displayName.length * 3)
+            .attr("y", y - 25)
+            .attr("width", displayName.length * 6)
+            .attr("height", 16)
+            .attr("fill", "white")
+            .attr("opacity", 0.8)
+            .attr("rx", 3)
+            .style("opacity", 0);
+
+          // Label text
+          const labelText = mapGroup.append("text")
+            .attr("x", x)
+            .attr("y", y - 15)
+            .attr("text-anchor", "middle")
+            .style("font-size", name === "uji" ? "13px" : "11px")
+            .style("font-weight", name === "uji" ? "bold" : "normal")
+            .style("fill", "#333")
+            .style("opacity", 0)
+            .text(displayName);
+
+          // Animate labels
+          labelBg.transition()
+            .delay(index * 200 + 1500)
+            .duration(400)
+            .style("opacity", 0.8);
+
+          labelText.transition()
+            .delay(index * 200 + 1500)
+            .duration(400)
+            .style("opacity", 1);
+        });
+
+        // Enhanced legend with route types - positioned at bottom right
+        const legendWidth = 320;
+        const legendHeight = routes.length * 32 + 50;
+        const legendX = width - legendWidth - 15;
+        const legendY = height - legendHeight - 15;
         
-        svg.append("text")
-          .attr("class", `route-label-${i}`)
-          .attr("x", x)
-          .attr("y", y - 10)
-          .attr("text-anchor", "middle")
-          .style("font-size", "12px")
+        const legend = svg.append("g")
+          .attr("transform", `translate(${legendX}, ${legendY})`);
+
+        // Legend background with border fitting
+        legend.append("rect")
+          .attr("width", legendWidth)
+          .attr("height", legendHeight)
+          .attr("fill", "white")
+          .attr("opacity", 0.95)
+          .attr("rx", 8)
+          .attr("stroke", "#ddd")
+          .attr("stroke-width", 1)
+          .style("filter", "drop-shadow(2px 2px 8px rgba(0,0,0,0.1))");
+
+        // Legend title
+        legend.append("text")
+          .attr("x", 15)
+          .attr("y", 22)
+          .text("Matcha Transportation Routes")
           .style("font-weight", "bold")
-          .style("opacity", 0)
-          .text(label)
-          .transition()
-          .delay(i * 1000 + 500 + j * 750)
-          .duration(500)
-          .style("opacity", 1);
-      });
-    });
+          .style("font-size", "14px")
+          .style("fill", "#333");
 
-    // Add legend
-    const legend = svg.append("g")
-      .attr("transform", `translate(${width - 200}, ${height - 80})`);
+        // Legend items with proper spacing for longer text
+        routes.forEach((route, i) => {
+          const y = 45 + i * 32;
+          
+          // Route line sample
+          legend.append("line")
+            .attr("x1", 15)
+            .attr("y1", y)
+            .attr("x2", 40)
+            .attr("y2", y)
+            .attr("stroke", route.color)
+            .attr("stroke-width", 3)
+            .attr("stroke-dasharray", route.dasharray);
 
-    // Legend background
-    legend.append("rect")
-      .attr("width", 180)
-      .attr("height", 70)
-      .attr("fill", "white")
-      .attr("opacity", 0.8)
-      .attr("rx", 5);
+          // Route type icon
+          const icon = route.type === "air" ? "✈️" : "🚢";
+          legend.append("text")
+            .attr("x", 50)
+            .attr("y", y + 5)
+            .attr("font-size", "14px")
+            .text(icon);
 
-    // Legend title
-    legend.append("text")
-      .attr("x", 10)
-      .attr("y", 20)
-      .text("Shipping Routes")
-      .style("font-weight", "bold");
+          // Route name with text wrapping for long names
+          const routeName = route.name;
+          if (routeName.length > 25) {
+            // Split long route names into two lines
+            const words = routeName.split(' ');
+            const midPoint = Math.ceil(words.length / 2);
+            const line1 = words.slice(0, midPoint).join(' ');
+            const line2 = words.slice(midPoint).join(' ');
+            
+            legend.append("text")
+              .attr("x", 75)
+              .attr("y", y - 2)
+              .text(line1)
+              .style("font-size", "11px")
+              .style("fill", "#333");
+              
+            legend.append("text")
+              .attr("x", 75)
+              .attr("y", y + 12)
+              .text(line2)
+              .style("font-size", "11px")
+              .style("fill", "#333");
+          } else {
+            legend.append("text")
+              .attr("x", 75)
+              .attr("y", y + 4)
+              .text(routeName)
+              .style("font-size", "11px")
+              .style("fill", "#333");
+          }
+        });
 
-    // Legend items
-    shippingRoutes.forEach((route, i) => {
-      // Line
-      legend.append("line")
-        .attr("x1", 10)
-        .attr("y1", 35 + i * 20)
-        .attr("x2", 40)
-        .attr("y2", 35 + i * 20)
-        .attr("stroke", route.color)
-        .attr("stroke-width", 2)
-        .attr("stroke-dasharray", route.dasharray || "none");
+        // Add border around the entire map
+        svg.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "none")
+          .attr("stroke", "#999")
+          .attr("stroke-width", 1)
+          .attr("rx", 8);
 
-      // Text
-      legend.append("text")
-        .attr("x", 50)
-        .attr("y", 40 + i * 20)
-        .text(route.name)
-        .style("font-size", "12px");
-    });
-    
-    // Error handling removed since we're not using asynchronous data loading anymore
+      } catch (error) {
+        console.error("Error loading world map:", error);
+        
+        // Fallback to simplified visualization if world map fails to load
+        svg.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "#f0f8ff")
+          .attr("opacity", 0.5);
+
+        svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", height / 2)
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .style("fill", "#666")
+          .text("Loading world map...");
+      }
+    };
+
+    // Load the world map
+    loadWorldMap();
 
     return () => {
       // Cleanup
@@ -341,8 +464,14 @@ export default function JourneyPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center bg-matcha-light text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-30 bg-gray-100 bg-cover bg-center"></div>
-        <div className="container-custom relative z-10 py-16 md:py-24">
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-40"
+          style={{
+            backgroundImage: 'url(https://plus.unsplash.com/premium_photo-1694825173868-ed003c071068?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'
+          }}
+        ></div>
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-matcha-dark/80 to-matcha-medium/75"></div>
+        <div className="container-custom relative z-20 py-16 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -382,7 +511,7 @@ export default function JourneyPage() {
             viewport={{ once: true }}
             className="bg-cream p-6 rounded-lg shadow-md mb-8"
           >
-            <div ref={globalMapRef} className="w-full h-[500px] bg-white rounded-lg">
+            <div ref={globalMapRef} className="w-full h-[500px] bg-gray-100 rounded-lg overflow-hidden">
               <div className="h-full w-full flex items-center justify-center">
                 <p className="text-gray-500">Loading global shipping routes visualization...</p>
               </div>
@@ -407,7 +536,7 @@ export default function JourneyPage() {
             <h2 className="text-3xl font-bold text-green-800 mb-4">New York City: America&apos;s Matcha Capital</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               Discover the top matcha cafes and shops across New York City, where matcha culture has
-              flourished and transformed into a uniquely American experience.
+              flourished and transformed into a uniquely American experience<InlineCitation sourceNumber={20} />.
             </p>
           </motion.div>
 
@@ -425,17 +554,17 @@ export default function JourneyPage() {
             </motion.div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex justify-center">
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="bg-white p-6 rounded-lg shadow-md"
+              className="bg-white p-6 rounded-lg shadow-md max-w-2xl"
             >
               <h3 className="text-xl font-bold mb-4 text-black">The Instagram Effect</h3>
               <p className="text-gray-900 mb-4">
-                Social media, particularly Instagram, has played a crucial role in matcha&apos;s popularity in NYC. 
+                Social media, particularly Instagram, has played a crucial role in matcha&apos;s popularity in NYC<InlineCitation sourceNumber={20} />. 
                 The vibrant green color and photogenic presentation of matcha drinks and desserts have made them 
                 social media favorites.
               </p>
@@ -474,6 +603,7 @@ export default function JourneyPage() {
               year="8th Century"
               title="Chinese Origins"
               description="Tang Dynasty China sees the development of powdered tea, the precursor to matcha."
+              sourceNumber={31}
               align="left"
               delay={0.1}
             />
@@ -482,6 +612,7 @@ export default function JourneyPage() {
               year="1191"
               title="Introduction to Japan"
               description="Zen monk Eisai brings tea seeds and the method for preparing powdered tea from China to Japan."
+              sourceNumber={6}
               align="right"
               delay={0.3}
             />
@@ -490,6 +621,7 @@ export default function JourneyPage() {
               year="16th Century"
               title="Tea Ceremony Formalization"
               description="Sen no Rikyu perfects the Japanese tea ceremony (chanoyu), elevating matcha to cultural prominence."
+              sourceNumber={7}
               align="left"
               delay={0.5}
             />
@@ -498,6 +630,7 @@ export default function JourneyPage() {
               year="1900s"
               title="Early Western Exposure"
               description="Japanese immigrants bring matcha to Hawaii and the West Coast of the United States."
+              sourceNumber={32}
               align="right"
               delay={0.7}
             />
@@ -506,6 +639,7 @@ export default function JourneyPage() {
               year="1990s"
               title="Initial Specialty Market"
               description="Matcha begins appearing in specialty tea shops and Japanese restaurants in major US cities."
+              sourceNumber={33}
               align="left"
               delay={0.9}
             />
@@ -514,6 +648,7 @@ export default function JourneyPage() {
               year="2000s"
               title="Starbucks Introduction"
               description="Major chains like Starbucks introduce matcha lattes, significantly increasing American exposure."
+              sourceNumber={20}
               align="right"
               delay={1.1}
             />
@@ -522,6 +657,7 @@ export default function JourneyPage() {
               year="2010s"
               title="Instagram Era"
               description="Social media platforms help transform matcha into a photogenic status symbol and wellness trend."
+              sourceNumber={20}
               align="left"
               delay={1.3}
             />
@@ -530,6 +666,7 @@ export default function JourneyPage() {
               year="Present Day"
               title="Mainstream Adoption"
               description="Matcha has become fully integrated into American food culture, appearing in everything from lattes to desserts to face masks."
+              sourceNumber={34}
               align="right"
               delay={1.5}
             />
@@ -563,14 +700,14 @@ export default function JourneyPage() {
             >
               <h3 className="text-xl font-bold mb-6 border-b border-matcha-dark pb-2 text-black">Shifting Cultural Context</h3>
               <p className="mb-4 text-gray-900">
-                In its journey from Japan to America, matcha underwent a profound transformation in cultural meaning. 
+                In its journey from Japan to America, matcha underwent a profound transformation in cultural meaning<InlineCitation sourceNumber={1} />. 
                 What was once a sacred element of Zen Buddhist practice and Japanese identity became reframed as a 
-                trendy superfood and aesthetic product.
+                trendy superfood and aesthetic product<Citation sources={[1, 5]} />.
               </p>
               <p className="mb-4 text-gray-900">
                 This shift represents a form of cultural appropriation where matcha has been largely divorced from its 
-                spiritual and ceremonial context. The American market has emphasized matcha&apos;s health benefits and visual 
-                appeal while often overlooking its deep cultural significance.
+                spiritual and ceremonial context<InlineCitation sourceNumber={1} />. The American market has emphasized matcha&apos;s health benefits and visual 
+                appeal while often overlooking its deep cultural significance<Citation sources={[1, 20]} />.
               </p>
               <p className="text-gray-900">
                 However, this transformation isn&apos;t simply a story of loss. It also demonstrates how cultural elements 
@@ -590,12 +727,12 @@ export default function JourneyPage() {
               <p className="mb-4 text-gray-900">
                 Traditional Japanese matcha preparation involves specific tools (chasen, chawan, chashaku) and precise 
                 movements that have been refined over centuries. The process itself is considered a meditative practice 
-                and an art form.
+                and an art form<InlineCitation sourceNumber={35} />.
               </p>
               <p className="mb-4 text-gray-900">
                 In contrast, American matcha preparation typically prioritizes convenience and flavor modification. 
                 Electric frothers replace bamboo whisks, and matcha is commonly mixed with milk, sweeteners, and other 
-                additives to appeal to Western palates.
+                additives to appeal to Western palates<InlineCitation sourceNumber={36} />.
               </p>
               <p className="text-gray-900">
                 This transformation in preparation methods reflects broader cultural differences in how food and drink 
@@ -617,7 +754,7 @@ export default function JourneyPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="heading-2 mb-4 text-black">The Economics of Global Matcha Trade</h2>
+            <h2 className="heading-2 mb-4 text-white">The Economics of Global Matcha Trade</h2>
             <p className="body-text max-w-3xl mx-auto text-white">
               Matcha&apos;s journey represents more than cultural exchange—it&apos;s also a story of global commerce and economic transformation.
             </p>
@@ -627,18 +764,21 @@ export default function JourneyPage() {
             <TradeCard 
               title="Production Challenges"
               description="As global demand increases, traditional Japanese matcha producers face pressure to scale up production while maintaining quality standards. This has led to tensions between tradition and commercialization."
+              sourceNumber={37}
               icon="🌱"
               delay={0.1}
             />
             <TradeCard 
               title="Quality Spectrum"
               description="The global market has created a wide spectrum of matcha quality, from premium ceremonial grades to lower-quality culinary grades, with significant price and quality differences often not understood by Western consumers."
+              sourceNumber={37}
               icon="⭐"
               delay={0.3}
             />
             <TradeCard 
               title="Market Expansion"
               description="Beyond beverages, matcha has expanded into diverse product categories including desserts, skincare, and even household goods, creating new economic opportunities across multiple industries."
+              sourceNumber={34}
               icon="📈"
               delay={0.5}
             />
@@ -653,7 +793,7 @@ export default function JourneyPage() {
           >
             <h3 className="text-xl font-bold mb-4 text-gray-900">Did You Know?</h3>
             <p className="body-text text-gray-800">
-              Japan exports only about 5% of its matcha production. The highest quality matcha rarely leaves Japan, 
+              Japan exports only about 5% of its matcha production<InlineCitation sourceNumber={37} />. The highest quality matcha rarely leaves Japan, 
               with most exported matcha being lower culinary grades. This has created a significant quality gap 
               between what Japanese consumers experience as authentic matcha and what most American consumers encounter.
             </p>
@@ -686,10 +826,15 @@ export default function JourneyPage() {
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
-                <div className="w-full h-full bg-matcha-medium bg-cover bg-center"></div>
+                <div 
+                  className="w-full h-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: 'url(https://matchadirect.kyoto/cdn/shop/articles/28.jpg?v=1690696619)'
+                  }}
+                ></div>
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Uji Region</h3>
-              <p className="text-gray-900 mb-4">&quot;As matcha&#39;s appeal rises, health-conscious millennials and Gen Z consumers view it as both a healthier alternative to coffee and a symbol of mindfulness.&quot;</p>
+              <p className="text-gray-900 mb-4">&quot;As matcha&#39;s appeal rises, health-conscious millennials and Gen Z consumers view it as both a healthier alternative to coffee and a symbol of mindfulness.&quot;<InlineCitation sourceNumber={20} /></p>
               <p className="text-gray-900 mb-4">
                 Considered the birthplace of Japanese tea culture, Uji (near Kyoto) is the most prestigious matcha-producing region with a 800-year history. Sheltered by mountains and blessed with morning mists and mineral-rich soil.
               </p>
@@ -717,11 +862,16 @@ export default function JourneyPage() {
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
-                <div className="w-full h-full bg-matcha-light bg-cover bg-center"></div>
+                <div 
+                  className="w-full h-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: 'url(https://travel.rakuten.com/contents/sites/contents/files/styles/max_1300x1300/public/2025-03/nishio-city-guide_6.jpg?itok=9HOAmi6w)'
+                  }}
+                ></div>
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Nishio Region</h3>
               <p className="text-gray-900 mb-4">
-                Located in Aichi Prefecture, Nishio is Japan&apos;s largest matcha producer. The region benefits from abundant rainfall, moderate temperatures, and nutrient-rich soil from the Yahagi River.
+                Located in Aichi Prefecture, Nishio is Japan&apos;s largest matcha producer<InlineCitation sourceNumber={38} />. The region benefits from abundant rainfall, moderate temperatures, and nutrient-rich soil from the Yahagi River.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center">
@@ -747,11 +897,16 @@ export default function JourneyPage() {
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
-                <div className="w-full h-full bg-matcha-dark bg-cover bg-center"></div>
+                <div 
+                  className="w-full h-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: 'url(https://i0.wp.com/www.fukuoka-now.com/wp-content/uploads/2020/02/fukuoka-now-WEB-001-2-4.jpg?w=1400&ssl=1)'
+                  }}
+                ></div>
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Yame Region</h3>
               <p className="text-gray-900 mb-4">
-                Located in Fukuoka Prefecture, Yame has been producing tea since the 1400s. The region&apos;s mountainous terrain creates significant temperature differences between day and night, ideal for developing complex flavors.
+                Located in Fukuoka Prefecture, Yame has been producing tea since the 1400s<InlineCitation sourceNumber={39} />. The region&apos;s mountainous terrain creates significant temperature differences between day and night, ideal for developing complex flavors.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center">
@@ -775,13 +930,20 @@ export default function JourneyPage() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center p-6 bg-cream rounded-lg shadow-md mb-8"
+            className="text-center p-6 bg-matcha-powder/20 rounded-lg shadow-md mb-8"
           >
             <h3 className="text-xl font-bold mb-4 text-gray-900">Regional Influence on Matcha Quality</h3>
             <p className="text-lg text-gray-800 mb-4">
-              In Japan, the region of origin is considered one of the most important factors in matcha quality evaluation, comparable to the concept of &quot;terroir&quot; in wine. Most premium matcha sold in America comes from these three key regions, though this information is often omitted in marketing materials that focus on broad terms like &quot;ceremonial grade.&quot;
+              In Japan, the region of origin is considered one of the most important factors in matcha quality evaluation, comparable to the concept of &quot;terroir&quot; in wine<Citation sources={[21, 22]} />. Most premium matcha sold in America comes from these three key regions, though this information is often omitted in marketing materials that focus on broad terms like &quot;ceremonial grade.&quot;
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Bibliography Section */}
+      <section className="section bg-white">
+        <div className="container-custom">
+          <Bibliography sources={getJourneyPageSources()} />
         </div>
       </section>
 
@@ -818,7 +980,7 @@ export default function JourneyPage() {
 }
 
 // Component for Timeline Events
-const TimelineEvent = ({ year, title, description, align, delay }: TimelineEventProps) => (
+const TimelineEvent = ({ year, title, description, align, delay, sourceNumber }: TimelineEventProps) => (
   <motion.div
     initial={{ opacity: 0, x: align === 'left' ? -20 : 20 }}
     whileInView={{ opacity: 1, x: 0 }}
@@ -826,19 +988,21 @@ const TimelineEvent = ({ year, title, description, align, delay }: TimelineEvent
     viewport={{ once: true }}
     className={`relative mb-12 ${align === 'left' ? 'md:pr-12 md:text-right' : 'md:pl-12'} md:w-1/2 ${align === 'left' ? 'md:ml-0 md:mr-auto' : 'md:mr-0 md:ml-auto'}`}
   >
-    <div className={`md:absolute ${align === 'left' ? 'md:right-0' : 'md:left-0'} md:transform md:translate-x-1/2 top-0 bg-matcha-dark text-white py-2 px-4 rounded-md shadow-md`}>
+    <div className={`md:absolute ${align === 'left' ? 'md:-right-4' : 'md:-left-4'} md:transform ${align === 'left' ? 'md:translate-x-full' : 'md:-translate-x-full'} top-0 bg-matcha-dark text-white py-2 px-4 rounded-md shadow-md`}>
       <span className="font-bold">{year}</span>
     </div>
     <div className="bg-white p-6 rounded-lg shadow-md mt-8 md:mt-0">
       <h3 className="text-lg font-bold mb-2 text-black">{title}</h3>
-      <p className="text-gray-900">{description}</p>
+      <p className="text-gray-900">
+        {description}
+        {sourceNumber && <InlineCitation sourceNumber={sourceNumber} />}
+      </p>
     </div>
-    <div className={`absolute top-6 ${align === 'left' ? 'right-0 md:-right-4' : 'left-0 md:-left-4'} transform translate-x-1/2 md:translate-x-0 w-8 h-8 bg-matcha-medium rounded-full border-4 border-white z-10 hidden md:block`}></div>
   </motion.div>
 );
 
 // Component for Trade Cards
-const TradeCard = ({ title, description, icon, delay }: TradeCardProps) => (
+const TradeCard = ({ title, description, icon, delay, sourceNumber }: TradeCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -848,6 +1012,9 @@ const TradeCard = ({ title, description, icon, delay }: TradeCardProps) => (
   >
     <div className="text-4xl mb-4">{icon}</div>
     <h3 className="text-xl font-bold mb-3 text-black">{title}</h3>
-    <p className="text-gray-900">{description}</p>
+    <p className="text-gray-900">
+      {description}
+      {sourceNumber && <InlineCitation sourceNumber={sourceNumber} />}
+    </p>
   </motion.div>
 );

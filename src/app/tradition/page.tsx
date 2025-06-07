@@ -836,9 +836,10 @@ interface ProductionStepProps {
   title: string;
   description: string;
   align: 'left' | 'right';
+  sourceNumber?: number;
 }
 
-const ProductionStep = ({ number, title, description, align }: ProductionStepProps) => (
+const ProductionStep = ({ number, title, description, align, sourceNumber }: ProductionStepProps) => (
   <motion.div
     initial={{ opacity: 0, x: align === 'left' ? -20 : 20 }}
     whileInView={{ opacity: 1, x: 0 }}
@@ -851,7 +852,10 @@ const ProductionStep = ({ number, title, description, align }: ProductionStepPro
     </div>
     <div className={`${align === 'left' ? 'text-left' : 'text-right'}`}>
       <h3 className="text-xl font-bold mb-2 text-black">{title}</h3>
-      <p className="text-black">{description}</p>
+      <p className="text-black">
+        {description}
+        {sourceNumber && <InlineCitation sourceNumber={sourceNumber} />}
+      </p>
     </div>
   </motion.div>
 );
