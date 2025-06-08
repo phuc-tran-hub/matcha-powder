@@ -168,23 +168,23 @@ export const getBibliographyEntries = (ids: number[]): BibliographyEntry[] => {
 
 // Helper function to get all entries for a specific page
 export const getTraditionPageSources = (): BibliographyEntry[] => {
-  // Sources most relevant to the tradition page
-  return getBibliographyEntries([2, 3, 6, 7, 8, 9, 10, 14, 15]);
+  // Sources actually cited on the tradition page
+  return getBibliographyEntries([2, 3, 6, 7, 8, 10, 11, 14, 15]);
 };
 
 export const getJourneyPageSources = (): BibliographyEntry[] => {
-  // Sources most relevant to the journey page
-  return getBibliographyEntries([1, 5, 11, 12, 13, 18]);
+  // Sources actually cited on the journey page
+  return getBibliographyEntries([1, 2, 4, 6, 11, 13, 14, 18]);
 };
 
 export const getCommodificationPageSources = (): BibliographyEntry[] => {
-  // Sources most relevant to the commodification page
-  return getBibliographyEntries([1, 4, 11, 12, 13, 16, 17, 18]);
+  // Sources actually cited on the commodification page
+  return getBibliographyEntries([1, 4, 11, 12, 13, 16, 17]);
 };
 
 export const getSensoryPageSources = (): BibliographyEntry[] => {
-  // Sources most relevant to the sensory page
-  return getBibliographyEntries([10, 14, 16, 17]);
+  // Sources actually cited on the sensory page
+  return getBibliographyEntries([1, 10, 13, 14, 17]);
 };
 
 export const getAboutPageSources = (): BibliographyEntry[] => {
