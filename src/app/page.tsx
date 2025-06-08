@@ -9,7 +9,13 @@ export default function Home() {
     <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center bg-matcha-dark text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-30 bg-matcha-medium/20 bg-repeat"></div>
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-50"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1589698272390-0501a07619bb?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'
+          }}
+        ></div>
+        <div className="absolute inset-0 z-5 bg-gradient-to-b from-matcha-dark/80 via-matcha-dark/70 to-matcha-dark/80"></div>
         <div className="container-custom relative z-10 py-16 md:py-24">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -20,7 +26,7 @@ export default function Home() {
             <h1 className="heading-1 mb-6">
               <span className="text-matcha-light">抹茶</span> Matcha: A Journey From Japan to America
             </h1>
-            <p className="body-text mb-8 text-matcha-light">
+            <p className="body-text mb-8 text-white">
               Explore the cultural transformation of matcha powder from its sacred Japanese origins 
               to its modern commodification in American markets.
             </p>
@@ -28,7 +34,7 @@ export default function Home() {
               <Link href="/journey" className="btn-primary text-center">
                 Begin the Journey
               </Link>
-              <Link href="/about" className="bg-transparent border border-white hover:bg-white/10 text-white font-medium py-2 px-4 rounded-md transition-colors text-center">
+              <Link href="/about" className="bg-white hover:bg-white/90 text-matcha-dark font-medium py-2 px-4 rounded-md transition-colors text-center">
                 Learn More
               </Link>
             </div>
@@ -44,7 +50,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">The Global Trajectory of Matcha</h2>
@@ -58,7 +64,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
@@ -78,7 +84,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
@@ -98,13 +104,13 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
                 <span className="text-xl font-bold">商</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-black">American Commodification</h3>
+              <h3 className="text-lg font-bold mb-3 text-black">American Commodification</h3>
               <p className="text-gray-800">
                 Witness matcha&apos;s transformation into a trendy commodity and &apos;superfood,&apos; driven by American markets, from NYC cafes 
                 to Starbucks, and its portrayal on social media.
@@ -118,7 +124,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="bg-matcha-dark text-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
@@ -143,7 +149,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">Traditional vs. Americanized Matcha</h2>
@@ -156,7 +162,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="bg-white shadow-lg rounded-lg overflow-hidden relative"
           >
             <div className="absolute inset-0 z-0 opacity-15 bg-gradient-to-br from-matcha-light to-matcha-dark pointer-events-none"></div>
@@ -249,7 +255,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
           >
             <h2 className="heading-2 mb-6">Begin Your Matcha Journey</h2>
             <p className="body-text max-w-2xl mx-auto mb-8">

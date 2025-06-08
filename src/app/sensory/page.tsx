@@ -3,6 +3,8 @@
 // Import removed to fix lint error
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Citation, InlineCitation, Bibliography } from '../../components/Citation';
+import { getSensoryPageSources } from '../../data/bibliography';
 
 export default function SensoryPage() {
   return (
@@ -33,13 +35,13 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">The Japanese Tea Lexicon</h2>
             <p className="body-text max-w-3xl mx-auto text-gray-800">
               Japanese tea culture possesses a rich and nuanced vocabulary for describing the sensory characteristics of tea, 
-              reflecting centuries of refined appreciation and cultural significance.
+              reflecting centuries of refined appreciation and cultural significance<InlineCitation sourceNumber={14} />.
             </p>
           </motion.div>
 
@@ -48,18 +50,18 @@ export default function SensoryPage() {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
             >
               <h3 className="text-xl font-bold mb-4 text-gray-900">Describing the Indescribable</h3>
               <div className="w-16 h-1 bg-matcha-dark mb-6"></div>
               <p className="body-text mb-4">
                 The challenge of translating sensory experiences across cultures is significant, as taste and smell 
                 are inherently difficult to describe accurately with language, often relying on analogy or metaphor 
-                which can be culturally specific.
+                which can be culturally specific<InlineCitation sourceNumber={17} />.
               </p>
               <p className="body-text mb-4 text-gray-800">
                 In Japan, matcha evaluation relies heavily on tacit knowledge and cultivated sensory expertise, 
-                similar to how wine sommeliers develop their palate through years of practice and study.
+                similar to how wine sommeliers develop their palate through years of practice and study<InlineCitation sourceNumber={13} />.
               </p>
               <p className="body-text text-gray-800">
                 While American descriptions of matcha often rely on broader, more generalized terms, the Japanese 
@@ -71,7 +73,7 @@ export default function SensoryPage() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-matcha-powder/10 p-6 rounded-lg shadow-lg"
             >
               <h3 className="text-xl font-bold mb-6 border-b border-matcha-medium pb-2 text-center">Japanese Sensory Terms</h3>
@@ -140,13 +142,13 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">Evaluating Matcha Quality</h2>
             <p className="body-text max-w-3xl mx-auto text-gray-800">
               In Japan, the evaluation of matcha quality is a meticulous process that goes beyond simple taste, 
-              incorporating multiple sensory dimensions and production factors.
+              incorporating multiple sensory dimensions and production factors<Citation sources={[10, 14]} />.
             </p>
           </motion.div>
 
@@ -154,7 +156,7 @@ export default function SensoryPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="bg-white p-8 rounded-lg shadow-lg mb-12"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
@@ -226,7 +228,7 @@ export default function SensoryPage() {
                       <h4 className="font-bold text-gray-900">Origin</h4>
                       <p className="text-gray-700">
                         Specific regions in Japan (e.g., Uji, Nishio, Yame) are renowned for high-quality matcha, 
-                        each with their own terroir and production methods.
+                        each with their own terroir and production methods<InlineCitation sourceNumber={14} />.
                       </p>
                     </div>
                   </div>
@@ -265,7 +267,7 @@ export default function SensoryPage() {
                       <h4 className="font-bold text-gray-900">Shading Process</h4>
                       <p className="text-gray-700">
                         The duration and method of shading are critical for developing desired 
-                        flavor compounds and the vibrant green color.
+                        flavor compounds and the vibrant green color<InlineCitation sourceNumber={10} />.
                       </p>
                     </div>
                   </div>
@@ -283,13 +285,13 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">Cross-Cultural Valuation</h2>
             <p className="body-text max-w-3xl mx-auto text-gray-800">
               The way matcha&apos;s sensory attributes are described, valued, and communicated can differ significantly 
-              between cultures, notably between Japan and the United States.
+              between cultures, notably between Japan and the United States<InlineCitation sourceNumber={17} />.
             </p>
           </motion.div>
 
@@ -298,7 +300,7 @@ export default function SensoryPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-matcha-dark text-white p-6 rounded-lg shadow-md"
             >
               <h3 className="text-xl font-bold mb-4 border-b border-matcha-light pb-2">Japanese Perspective</h3>
@@ -330,7 +332,7 @@ export default function SensoryPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-matcha-medium text-white p-6 rounded-lg shadow-md"
             >
               <h3 className="text-xl font-bold mb-4 border-b border-white pb-2">American Perspective</h3>
@@ -363,13 +365,13 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-8"
           >
             <p className="text-lg text-gray-800 italic max-w-3xl mx-auto">
               &ldquo;The future may see a more mature American market where consumers, having moved past initial trend-driven curiosity, 
               seek out more diverse and high-quality Japanese teas, appreciate the subtleties of different preparation methods, 
-              and engage more deeply with the cultural narratives embedded within them.&rdquo;
+              and engage more deeply with the cultural narratives embedded within them.&rdquo;<InlineCitation sourceNumber={1} />
             </p>
           </motion.div>
         </div>
@@ -382,7 +384,7 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">The Nuanced Art of Matcha Grading</h2>
@@ -396,7 +398,7 @@ export default function SensoryPage() {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-lg border border-matcha-light/20"
             >
               <h3 className="text-xl font-bold mb-4 border-b border-matcha-dark pb-2">Japanese Evaluation System</h3>
@@ -445,7 +447,7 @@ export default function SensoryPage() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
             >
               <div className="bg-white p-6 rounded-lg shadow-lg border border-matcha-light/20 mb-8">
                 <h3 className="text-xl font-bold mb-4 border-b border-matcha-medium pb-2">Western Marketing Classifications</h3>
@@ -482,7 +484,7 @@ export default function SensoryPage() {
               <div className="bg-cream p-5 rounded-lg shadow-md">
                 <h3 className="text-lg font-bold mb-3 text-center">The Translation Gap</h3>
                 <p className="text-gray-800">
-                  The simplified Western grading system emerged as a market adaptation to make matcha more accessible to American consumers unfamiliar with Japanese tea traditions. While functional, this binary classification obscures the sophisticated evaluation system used in Japan, where each tea is judged on its individual merits rather than broad categories.
+                  The simplified Western grading system emerged as a market adaptation to make matcha more accessible to American consumers unfamiliar with Japanese tea traditions<InlineCitation sourceNumber={10} />. While functional, this binary classification obscures the sophisticated evaluation system used in Japan, where each tea is judged on its individual merits rather than broad categories.
                 </p>
               </div>
             </motion.div>
@@ -492,7 +494,7 @@ export default function SensoryPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="p-6 bg-matcha-dark text-white rounded-lg shadow-lg mb-8"
           >
             <h3 className="text-xl font-bold mb-4 text-center">Premium Matcha Characteristics</h3>
@@ -522,6 +524,13 @@ export default function SensoryPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Bibliography Section */}
+      <section className="section bg-white">
+        <div className="container-custom">
+          <Bibliography sources={getSensoryPageSources()} />
         </div>
       </section>
 

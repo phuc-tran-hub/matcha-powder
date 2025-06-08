@@ -494,7 +494,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">Mapping Matcha&apos;s Global Journey</h2>
@@ -508,7 +508,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="bg-cream p-6 rounded-lg shadow-md mb-8"
           >
             <div ref={globalMapRef} className="w-full h-[500px] bg-gray-100 rounded-lg overflow-hidden">
@@ -530,13 +530,13 @@ export default function JourneyPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-green-800 mb-4">New York City: America&apos;s Matcha Capital</h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               Discover the top matcha cafes and shops across New York City, where matcha culture has
-              flourished and transformed into a uniquely American experience<InlineCitation sourceNumber={20} />.
+              flourished and transformed into a uniquely American experience<InlineCitation sourceNumber={13} />.
             </p>
           </motion.div>
 
@@ -545,7 +545,7 @@ export default function JourneyPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
             >
               <div className="h-[500px] w-full bg-gray-100 rounded-lg overflow-hidden">
                 {/* The component accepts matchaShops prop */}
@@ -559,12 +559,12 @@ export default function JourneyPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md max-w-2xl"
             >
               <h3 className="text-xl font-bold mb-4 text-black">The Instagram Effect</h3>
               <p className="text-gray-900 mb-4">
-                Social media, particularly Instagram, has played a crucial role in matcha&apos;s popularity in NYC<InlineCitation sourceNumber={20} />. 
+                Social media, particularly Instagram, has played a crucial role in matcha&apos;s popularity in NYC<InlineCitation sourceNumber={13} />. 
                 The vibrant green color and photogenic presentation of matcha drinks and desserts have made them 
                 social media favorites.
               </p>
@@ -585,7 +585,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">Matcha&apos;s Historical Timeline</h2>
@@ -603,7 +603,7 @@ export default function JourneyPage() {
               year="8th Century"
               title="Chinese Origins"
               description="Tang Dynasty China sees the development of powdered tea, the precursor to matcha."
-              sourceNumber={31}
+              sourceNumber={6}
               align="left"
               delay={0.1}
             />
@@ -621,7 +621,7 @@ export default function JourneyPage() {
               year="16th Century"
               title="Tea Ceremony Formalization"
               description="Sen no Rikyu perfects the Japanese tea ceremony (chanoyu), elevating matcha to cultural prominence."
-              sourceNumber={7}
+              sourceNumber={2}
               align="left"
               delay={0.5}
             />
@@ -630,7 +630,7 @@ export default function JourneyPage() {
               year="1900s"
               title="Early Western Exposure"
               description="Japanese immigrants bring matcha to Hawaii and the West Coast of the United States."
-              sourceNumber={32}
+              sourceNumber={13}
               align="right"
               delay={0.7}
             />
@@ -639,7 +639,7 @@ export default function JourneyPage() {
               year="1990s"
               title="Initial Specialty Market"
               description="Matcha begins appearing in specialty tea shops and Japanese restaurants in major US cities."
-              sourceNumber={33}
+              sourceNumber={13}
               align="left"
               delay={0.9}
             />
@@ -648,7 +648,7 @@ export default function JourneyPage() {
               year="2000s"
               title="Starbucks Introduction"
               description="Major chains like Starbucks introduce matcha lattes, significantly increasing American exposure."
-              sourceNumber={20}
+              sourceNumber={13}
               align="right"
               delay={1.1}
             />
@@ -657,7 +657,7 @@ export default function JourneyPage() {
               year="2010s"
               title="Instagram Era"
               description="Social media platforms help transform matcha into a photogenic status symbol and wellness trend."
-              sourceNumber={20}
+              sourceNumber={13}
               align="left"
               delay={1.3}
             />
@@ -666,7 +666,7 @@ export default function JourneyPage() {
               year="Present Day"
               title="Mainstream Adoption"
               description="Matcha has become fully integrated into American food culture, appearing in everything from lattes to desserts to face masks."
-              sourceNumber={34}
+              sourceNumber={18}
               align="right"
               delay={1.5}
             />
@@ -681,7 +681,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">Cultural Transformation</h2>
@@ -695,19 +695,19 @@ export default function JourneyPage() {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-matcha-powder/20 p-8 rounded-lg"
             >
               <h3 className="text-xl font-bold mb-6 border-b border-matcha-dark pb-2 text-black">Shifting Cultural Context</h3>
               <p className="mb-4 text-gray-900">
                 In its journey from Japan to America, matcha underwent a profound transformation in cultural meaning<InlineCitation sourceNumber={1} />. 
                 What was once a sacred element of Zen Buddhist practice and Japanese identity became reframed as a 
-                trendy superfood and aesthetic product<Citation sources={[1, 5]} />.
+                trendy superfood and aesthetic product<Citation sources={[1, 4]} />.
               </p>
               <p className="mb-4 text-gray-900">
                 This shift represents a form of cultural appropriation where matcha has been largely divorced from its 
                 spiritual and ceremonial context<InlineCitation sourceNumber={1} />. The American market has emphasized matcha&apos;s health benefits and visual 
-                appeal while often overlooking its deep cultural significance<Citation sources={[1, 20]} />.
+                appeal while often overlooking its deep cultural significance<Citation sources={[1, 13]} />.
               </p>
               <p className="text-gray-900">
                 However, this transformation isn&apos;t simply a story of loss. It also demonstrates how cultural elements 
@@ -720,19 +720,19 @@ export default function JourneyPage() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-matcha-powder/20 p-8 rounded-lg"
             >
               <h3 className="text-xl font-bold mb-6 border-b border-matcha-dark pb-2 text-black">Changing Preparation Methods</h3>
               <p className="mb-4 text-gray-900">
                 Traditional Japanese matcha preparation involves specific tools (chasen, chawan, chashaku) and precise 
                 movements that have been refined over centuries. The process itself is considered a meditative practice 
-                and an art form<InlineCitation sourceNumber={35} />.
+                and an art form.
               </p>
               <p className="mb-4 text-gray-900">
                 In contrast, American matcha preparation typically prioritizes convenience and flavor modification. 
                 Electric frothers replace bamboo whisks, and matcha is commonly mixed with milk, sweeteners, and other 
-                additives to appeal to Western palates<InlineCitation sourceNumber={36} />.
+                additives to appeal to Western palates.
               </p>
               <p className="text-gray-900">
                 This transformation in preparation methods reflects broader cultural differences in how food and drink 
@@ -751,7 +751,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-white">The Economics of Global Matcha Trade</h2>
@@ -764,21 +764,21 @@ export default function JourneyPage() {
             <TradeCard 
               title="Production Challenges"
               description="As global demand increases, traditional Japanese matcha producers face pressure to scale up production while maintaining quality standards. This has led to tensions between tradition and commercialization."
-              sourceNumber={37}
+              sourceNumber={11}
               icon="🌱"
               delay={0.1}
             />
             <TradeCard 
               title="Quality Spectrum"
               description="The global market has created a wide spectrum of matcha quality, from premium ceremonial grades to lower-quality culinary grades, with significant price and quality differences often not understood by Western consumers."
-              sourceNumber={37}
+              sourceNumber={11}
               icon="⭐"
               delay={0.3}
             />
             <TradeCard 
               title="Market Expansion"
               description="Beyond beverages, matcha has expanded into diverse product categories including desserts, skincare, and even household goods, creating new economic opportunities across multiple industries."
-              sourceNumber={34}
+              sourceNumber={18}
               icon="📈"
               delay={0.5}
             />
@@ -788,12 +788,12 @@ export default function JourneyPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="mt-12 bg-white p-6 rounded-lg shadow-md"
           >
             <h3 className="text-xl font-bold mb-4 text-gray-900">Did You Know?</h3>
             <p className="body-text text-gray-800">
-              Japan exports only about 5% of its matcha production<InlineCitation sourceNumber={37} />. The highest quality matcha rarely leaves Japan, 
+              Japan exports only about 5% of its matcha production<InlineCitation sourceNumber={11} />. The highest quality matcha rarely leaves Japan, 
               with most exported matcha being lower culinary grades. This has created a significant quality gap 
               between what Japanese consumers experience as authentic matcha and what most American consumers encounter.
             </p>
@@ -808,7 +808,7 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4 text-black">The Terroir of Japanese Matcha</h2>
@@ -822,7 +822,7 @@ export default function JourneyPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
@@ -834,7 +834,7 @@ export default function JourneyPage() {
                 ></div>
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Uji Region</h3>
-              <p className="text-gray-900 mb-4">&quot;As matcha&#39;s appeal rises, health-conscious millennials and Gen Z consumers view it as both a healthier alternative to coffee and a symbol of mindfulness.&quot;<InlineCitation sourceNumber={20} /></p>
+              <p className="text-gray-900 mb-4">&quot;As matcha&#39;s appeal rises, health-conscious millennials and Gen Z consumers view it as both a healthier alternative to coffee and a symbol of mindfulness.&quot;<InlineCitation sourceNumber={13} /></p>
               <p className="text-gray-900 mb-4">
                 Considered the birthplace of Japanese tea culture, Uji (near Kyoto) is the most prestigious matcha-producing region with a 800-year history. Sheltered by mountains and blessed with morning mists and mineral-rich soil.
               </p>
@@ -858,7 +858,7 @@ export default function JourneyPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
@@ -871,7 +871,7 @@ export default function JourneyPage() {
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Nishio Region</h3>
               <p className="text-gray-900 mb-4">
-                Located in Aichi Prefecture, Nishio is Japan&apos;s largest matcha producer<InlineCitation sourceNumber={38} />. The region benefits from abundant rainfall, moderate temperatures, and nutrient-rich soil from the Yahagi River.
+                Located in Aichi Prefecture, Nishio is Japan&apos;s largest matcha producer<InlineCitation sourceNumber={14} />. The region benefits from abundant rainfall, moderate temperatures, and nutrient-rich soil from the Yahagi River.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center">
@@ -893,7 +893,7 @@ export default function JourneyPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="bg-white p-6 rounded-lg shadow-md border border-matcha-light/20"
             >
               <div className="h-48 mb-4 overflow-hidden rounded-lg">
@@ -906,7 +906,7 @@ export default function JourneyPage() {
               </div>
               <h3 className="text-xl font-bold mb-2 text-black">Yame Region</h3>
               <p className="text-gray-900 mb-4">
-                Located in Fukuoka Prefecture, Yame has been producing tea since the 1400s<InlineCitation sourceNumber={39} />. The region&apos;s mountainous terrain creates significant temperature differences between day and night, ideal for developing complex flavors.
+                Located in Fukuoka Prefecture, Yame has been producing tea since the 1400s<InlineCitation sourceNumber={6} />. The region&apos;s mountainous terrain creates significant temperature differences between day and night, ideal for developing complex flavors.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center">
@@ -929,12 +929,12 @@ export default function JourneyPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-center p-6 bg-matcha-powder/20 rounded-lg shadow-md mb-8"
           >
             <h3 className="text-xl font-bold mb-4 text-gray-900">Regional Influence on Matcha Quality</h3>
             <p className="text-lg text-gray-800 mb-4">
-              In Japan, the region of origin is considered one of the most important factors in matcha quality evaluation, comparable to the concept of &quot;terroir&quot; in wine<Citation sources={[21, 22]} />. Most premium matcha sold in America comes from these three key regions, though this information is often omitted in marketing materials that focus on broad terms like &quot;ceremonial grade.&quot;
+              In Japan, the region of origin is considered one of the most important factors in matcha quality evaluation, comparable to the concept of &quot;terroir&quot; in wine<InlineCitation sourceNumber={14} />. Most premium matcha sold in America comes from these three key regions, though this information is often omitted in marketing materials that focus on broad terms like &quot;ceremonial grade.&quot;
             </p>
           </motion.div>
         </div>
@@ -985,7 +985,7 @@ const TimelineEvent = ({ year, title, description, align, delay, sourceNumber }:
     initial={{ opacity: 0, x: align === 'left' ? -20 : 20 }}
     whileInView={{ opacity: 1, x: 0 }}
     transition={{ duration: 0.5, delay }}
-    viewport={{ once: true }}
+    viewport={{ once: false }}
     className={`relative mb-12 ${align === 'left' ? 'md:pr-12 md:text-right' : 'md:pl-12'} md:w-1/2 ${align === 'left' ? 'md:ml-0 md:mr-auto' : 'md:mr-0 md:ml-auto'}`}
   >
     <div className={`md:absolute ${align === 'left' ? 'md:-right-4' : 'md:-left-4'} md:transform ${align === 'left' ? 'md:translate-x-full' : 'md:-translate-x-full'} top-0 bg-matcha-dark text-white py-2 px-4 rounded-md shadow-md`}>
@@ -1007,7 +1007,7 @@ const TradeCard = ({ title, description, icon, delay, sourceNumber }: TradeCardP
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay }}
-    viewport={{ once: true }}
+    viewport={{ once: false }}
     className="bg-white p-6 rounded-lg shadow-md"
   >
     <div className="text-4xl mb-4">{icon}</div>
